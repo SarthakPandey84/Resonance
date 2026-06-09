@@ -63,7 +63,8 @@ export default function App() {
       const formData = new FormData();
       formData.append("file", file);
       
-      const apiResponse = await fetch("http://localhost:8000/predict", {
+      const apiUrl = import.meta.env.PROD ? '/_/backend' : 'http://localhost:8000';
+      const apiResponse = await fetch(`${apiUrl}/predict`, {
         method: "POST",
         body: formData,
       });
