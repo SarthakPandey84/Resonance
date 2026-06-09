@@ -1,0 +1,26 @@
+# Python / ML
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+.venv/
+ml/dataset/
+ml/saved_models/*.h5
+ml/saved_models/*.pkl
+
+# Node / React
+node_modules/
+dist/
+build/
+.env.local
+.env.*.local
+npm-debug.log*
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
