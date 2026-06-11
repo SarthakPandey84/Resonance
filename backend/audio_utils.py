@@ -1,9 +1,9 @@
 import librosa
 import numpy as np
 
-def extract_features(file_path):
+def extract_features(file_path, max_len=130):
     """
-    Extracts MFCCs and Mel-Spectrogram features from an audio file.
+    Extracts MFCCs features from an audio file.
     This perfectly matches the preprocessing logic used in Phase 1 training.
     """
     # Load audio file (3s duration, offset by 0.5s to skip silence)
@@ -11,18 +11,16 @@ def extract_features(file_path):
     
     # 1. MFCC
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=40)
-    mfcc_mean = np.mean(mfcc.T, axis=0)
+    mfcc = mfcc.T # Shape becomes (timesteps, n_mfcc)
     
-    # 2. Mel-Spectrogram
-    mel = librosa.feature.melspectrogram(y=y, sr=sr)
-    mel_mean = np.mean(mel.T, axis=0)
-    
-    # Concatenate features
-    features = np.hstack((mfcc_mean, mel_mean))
+    # Pad or truncate to max_len
+    if mfcc.shape[0] < max_len:
+        pad_width = max_len - mfcc.shape[0]
+        mfcc = np.pad(mfcc, pad_width=((0, pad_width), (0, 0)), mode='constant')
+    else:
+        mfcc = mfcc[:max_len, :]
     
     # Reshape for the CNN+LSTM model (samples, timesteps, features)
-    # The model expects a sequence, here we have 1 sequence of concatenated features
-    features = np.expand_dims(features, axis=0)  # Add batch dimension
-    features = np.expand_dims(features, axis=2)  # Add feature/channel dimension
+    features = np.expand_dims(mfcc, axis=0)  # Add batch dimension
     
     return features
