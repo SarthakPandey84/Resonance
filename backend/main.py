@@ -82,7 +82,7 @@ async def predict_emotion(file: UploadFile = File(...)):
         features = extract_features(tmp_path)
         
         # Run inference
-        predictions = model.predict(features)[0]  # We sent a batch of 1, so take the first result
+        predictions = model(features, training=False)[0].numpy()  # We sent a batch of 1, so take the first result
         
         # Determine the highest confidence class
         predicted_class_index = np.argmax(predictions)
